@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EURO 2024">
+<link rel="apple-touch-icon" href="IMG_0703.png">
+<title>EURO 2024 Results</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #0d1117;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  overflow-x: hidden; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  user-select: none; -webkit-user-select: none;
+}
+.page-wrapper { display: flex; flex-direction: column; align-items: center; min-height: 100vh; background: #0d1117; }
+.pg-head {
+  background: linear-gradient(135deg,#061730,#124094,#061730);
+  border-bottom: 2px solid #00f2fe;
+  padding: 7px 8px 5px;
+  position: sticky; top: 0; z-index: 99;
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  width: 100%;
+}
+.pg-head-text h1 { color: #00f2fe; font-size: 13px; font-weight: 900; letter-spacing: 2px; }
+.pg-head-text p  { color: #7a9acc; font-size: 7.5px; letter-spacing: 1px; margin-top: 1px; }
+.btn-group { display: flex; gap: 6px; flex-shrink: 0; }
+.hbtn { border: none; border-radius: 7px; font-size: 11px; font-weight: 900; padding: 7px 11px; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+.hbtn:active { opacity: .7; }
+.btn-auto   { background: #00f2fe; color: #000; }
+.btn-manual { background: #21262d; color: #00f2fe; border: 1px solid #00f2fe !important; }
+.sec {
+  background: #161b22; color: #00f2fe;
+  font-size: 8.5px; font-weight: 900; letter-spacing: 2px;
+  text-transform: uppercase; text-align: center; padding: 5px 4px;
+  border-top: 1px solid #21262d; border-bottom: 1px solid #21262d;
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+}
+.sec::before,.sec::after { content:''; flex:1; height:1px; background:linear-gradient(to right,transparent,#00f2fe44); }
+.sec::after { background:linear-gradient(to left,transparent,#00f2fe44); }
+.legend {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  padding: 4px 6px; background: #0d1117;
+  font-size: 7.5px; color: #6e7681; border-bottom: 1px solid #21262d; width: 100%;
+}
+.legend span { display: flex; align-items: center; gap: 3px; }
+.ldot { width: 8px; height: 8px; border-radius: 2px; }
+.content-section { width: 100%; max-width: 1600px; padding: 0; background: #0d1117; }
+.grp-band {
+  display: flex; gap: 5px; padding: 6px 5px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: #0d1117; scrollbar-width: none; width: 100%;
+}
+.grp-band::-webkit-scrollbar { display: none; }
+.grp { flex:0 0 auto; width:152px; border-radius:8px; overflow:hidden; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.4); }
+.grp-hdr { color:#fff; font-weight:900; font-size:10.5px; padding:4px 7px; display:flex; justify-content:space-between; align-items:center; }
+.grp-tbl { width:100%; border-collapse:collapse; }
+.grp-tbl th { background:#e8e8e8; font-size:7.5px; padding:2px; text-align:center; color:#555; }
+.grp-tbl td { padding:2px; border-bottom:1px solid #eee; vertical-align:middle; }
+.grp-tbl tr:last-child td { border-bottom:none; }
+.tn { display:flex; align-items:center; gap:2px; font-weight:700; white-space:nowrap; font-size:8.5px; }
+.fl { font-size:11px; line-height:1; }
+.pts-c { font-weight:900; text-align:center; font-size:9px; }
+.num-c { text-align:center; color:#777; font-size:8px; }
+.q1{background:#c6f6d5!important} .q2{background:#bee3f8!important} .q3{background:#fefcbf!important}
+.mrow { display:grid; grid-template-columns:28px 1fr 18px 1fr; align-items:center; padding:1.5px 4px; border-bottom:1px solid #f0f0f0; background:#f9f9f9; gap:1px; }
+.mrow:last-child{border-bottom:none}
+.mrow .md  { color:#bbb; font-size:6.5px; white-space:nowrap; }
+.mrow .mt1 { font-weight:600; font-size:7px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mrow .mt2 { text-align:right; font-weight:600; font-size:7px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mscore { background:#1a1a2e; color:#fff; padding:0 2px; border-radius:2px; font-weight:900; font-size:6.5px; text-align:center; }
+.ko-section { background:#0d1117; padding:0 5px 6px; width:100%; display:flex; flex-direction:column; align-items:center; }
+.round-label { text-align:center; color:#00f2fe; font-size:8px; font-weight:900; letter-spacing:2px; text-transform:uppercase; padding:5px 0 3px; }
+.ko-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px; display:flex; justify-content:center; width:100%; }
+.ko-scroll::-webkit-scrollbar{display:none}
+.ko-row { display:flex; gap:5px; min-width:max-content; padding:0 1px; }
+.mc { width:132px; flex-shrink:0; border:1.5px solid #21262d; border-radius:7px; overflow:hidden; background:#161b22; }
+.mc .tr { display:flex; align-items:center; padding:4px 6px; border-bottom:1px solid #21262d; font-size:8px; font-weight:700; color:#e6edf3; white-space:nowrap; overflow:hidden; }
+.mc .tr:last-of-type{border-bottom:none}
+.mc .tr .sc { margin-left:auto; background:#21262d; color:#8b949e; padding:1px 4px; border-radius:4px; font-size:8px; min-width:16px; text-align:center; flex-shrink:0; font-weight:900; }
+.mc .tr .winner { color: #00f2fe; }
+.mc .bi { background:#0d1117; font-size:7px; color:#6e7681; padding:2px 5px; text-align:center; }
+.mc-final { width:160px; flex-shrink:0; border:2.5px solid #00f2fe; border-radius:9px; overflow:hidden; background:#0d1117; box-shadow:0 3px 12px rgba(0,242,254,.25); }
+.mc-final .fh { background:linear-gradient(135deg,#0052d4,#4364f7,#6fb1fc); color:#fff; text-align:center; font-weight:900; font-size:11px; padding:5px; letter-spacing:2px; }
+.mc-final .tr { display:flex; align-items:center; padding:5px 8px; border-bottom:1px solid #21262d; font-size:9.5px; font-weight:900; color:#e6edf3; }
+.mc-final .tr:last-of-type{border-bottom:none}
+.mc-final .tr .sc { margin-left:auto; background:#21262d; color:#00f2fe; padding:2px 6px; border-radius:4px; font-size:9px; min-width:18px; text-align:center; }
+.mc-final .bi { background:#161b22; font-size:7.5px; color:#8b949e; padding:3px 6px; text-align:center; }
+.finals-row { display:flex; gap:8px; justify-content:center; align-items:flex-start; padding:2px 4px; flex-wrap:wrap; }
+.pg-foot { background:#051124; color:#00f2fe; text-align:center; font-size:10px; font-weight:900; padding:8px; letter-spacing:2px; border-top:2px solid #00f2fe; margin-top:4px; width:100%; }
+
+@media (min-width: 768px) {
+  .page-wrapper { padding: 0 20px; }
+  .pg-head { margin: 0 -20px; padding-left: 28px; padding-right: 28px; }
+  .legend { margin: 0 -20px; padding: 8px 12px; width: calc(100% + 40px); }
+  .sec { margin: 0 -20px; width: calc(100% + 40px); font-size: 12px; padding: 8px; }
+  .content-section { max-width: 1400px; padding: 0; }
+  .pg-head-text h1 { font-size: 20px; letter-spacing: 3px; }
+  .pg-head-text p  { font-size: 11px; }
+  .hbtn { font-size: 14px; padding: 9px 18px; }
+  .ldot { width: 12px; height: 12px; }
+  .grp-band { gap: 8px; padding: 0 12px; justify-content: center; }
+  .grp { width: 220px; border-radius: 8px; }
+  .grp-hdr { font-size: 14px; padding: 6px 10px; }
+  .grp-tbl th { font-size: 11px; padding: 3px 4px; }
+  .grp-tbl td { padding: 3px 4px; }
+  .tn { font-size: 12px; gap: 4px; }
+  .fl { font-size: 15px; }
+  .pts-c { font-size: 13px; }
+  .num-c { font-size: 11px; }
+  .mrow { grid-template-columns: 40px 1fr 24px 1fr; padding: 3px 6px; }
+  .mrow .md  { font-size: 10px; }
+  .mrow .mt1, .mrow .mt2 { font-size: 11px; }
+  .mscore { font-size: 11px; padding: 1px 5px; border-radius: 4px; }
+  .ko-section { padding: 0 12px 10px; }
+  .round-label { font-size: 12px; padding: 8px 0 5px; letter-spacing: 3px; }
+  .ko-row { gap: 8px; }
+  .mc { width: 190px; border-radius: 9px; }
+  .mc .tr { font-size: 11.5px; padding: 5px 8px; }
+  .mc .tr .sc { font-size: 11px; min-width: 22px; padding: 2px 6px; }
+  .mc .bi { font-size: 10px; padding: 3px 8px; }
+  .mc-final { width: 240px; border-radius: 12px; }
+  .mc-final .fh { font-size: 16px; padding: 8px; letter-spacing: 3px; }
+  .mc-final .tr { font-size: 13px; padding: 7px 12px; }
+  .mc-final .tr .sc { font-size: 12px; min-width: 26px; padding: 3px 8px; }
+  .mc-final .bi { font-size: 11px; padding: 4px 10px; }
+  .pg-foot { font-size: 14px; padding: 12px; letter-spacing: 3px; }
+}
+@media (min-width: 1200px) {
+  .content-section { max-width: 1600px; }
+  .grp { width: 260px; }
+  .mc { width: 210px; }
+  .mc-final { width: 260px; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+  <div class="pg-head">
+    <div class="pg-head-text">
+      <h1>⚽ UEFA EURO 2024™</h1>
+      <p>GERMANY &nbsp;|&nbsp; 14 JUN &ndash; 14 JUL 2024 &nbsp;|&nbsp; 10 VENUES &nbsp;|&nbsp; FINAL ARCHIVE</p>
+    </div>
+    <div class="btn-group">
+      <button class="hbtn btn-auto" id="auto-btn">🏆 Final</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><div class="ldot" style="background:#c6f6d5;border:1px solid #68d391"></div>1st</span>
+    <span><div class="ldot" style="background:#bee3f8;border:1px solid #63b3ed"></div>2nd</span>
+    <span><div class="ldot" style="background:#fefcbf;border:1px solid #f6e05e"></div>3rd Qualified</span>
+  </div>
+
+  <div class="sec">GROUPS A &ndash; C</div>
+  <div class="content-section"><div class="grp-band" id="top-groups"></div></div>
+  <div class="sec">KNOCKOUT BRACKET</div>
+  <div class="ko-section" id="ko"></div>
+  <div class="sec">GROUPS D &ndash; F</div>
+  <div class="content-section"><div class="grp-band" id="bot-groups"></div></div>
+  <div class="pg-foot">UEFA EURO 2024™ &nbsp;&middot;&nbsp; GERMANY &nbsp;&middot;&nbsp; CHAMPIONS: SPAIN 🇪🇸</div>
+</div>
+
+<script>
+var GROUPS = [
+  {
+    id:'A', hc:'linear-gradient(135deg,#1e3a8a,#3b82f6)',
+    teams:[
+      {name:'Germany', gd:'+6', pts:7},
+      {name:'Switzerland', gd:'+2', pts:5},
+      {name:'Hungary', gd:'-3', pts:3},
+      {name:'Scotland', gd:'-5', pts:1}
+    ],
+    matches:[
+      {date:'14 Jun', t1:'Germany', t2:'Scotland', s1:5, s2:1},
+      {date:'15 Jun', t1:'Hungary', t2:'Switzerland', s1:1, s2:3},
+      {date:'19 Jun', t1:'Germany', t2:'Hungary', s1:2, s2:0},
+      {date:'19 Jun', t1:'Scotland', t2:'Switzerland', s1:1, s2:1},
+      {date:'23 Jun', t1:'Switzerland', t2:'Germany', s1:1, s2:1},
+      {date:'23 Jun', t1:'Scotland', t2:'Hungary', s1:0, s2:1}
+    ]
+  },
+  {
+    id:'B', hc:'linear-gradient(135deg,#b91c1c,#ef4444)',
+    teams:[
+      {name:'Spain', gd:'+5', pts:9},
+      {name:'Italy', gd:'0', pts:4},
+      {name:'Croatia', gd:'-3', pts:2},
+      {name:'Albania', gd:'-2', pts:1}
+    ],
+    matches:[
+      {date:'15 Jun', t1:'Spain', t2:'Croatia', s1:3, s2:0},
+      {date:'15 Jun', t1:'Italy', t2:'Albania', s1:2, s2:1},
+      {date:'19 Jun', t1:'Croatia', t2:'Albania', s1:2, s2:2},
+      {date:'20 Jun', t1:'Spain', t2:'Italy', s1:1, s2:0},
+      {date:'24 Jun', t1:'Albania', t2:'Spain', s1:0, s2:1},
+      {date:'24 Jun', t1:'Croatia', t2:'Italy', s1:1, s2:1}
+    ]
+  },
+  {
+    id:'C', hc:'linear-gradient(135deg,#15803d,#22c55e)',
+    teams:[
+      {name:'England', gd:'+1', pts:5},
+      {name:'Denmark', gd:'0', pts:3},
+      {name:'Slovenia', gd:'0', pts:3},
+      {name:'Serbia', gd:'-1', pts:2}
+    ],
+    matches:[
+      {date:'16 Jun', t1:'Slovenia', t2:'Denmark', s1:1, s2:1},
+      {date:'16 Jun', t1:'Serbia', t2:'England', s1:0, s2:1},
+      {date:'20 Jun', t1:'Slovenia', t2:'Serbia', s1:1, s2:1},
+      {date:'20 Jun', t1:'Denmark', t2:'England', s1:1, s2:1},
+      {date:'25 Jun', t1:'England', t2:'Slovenia', s1:0, s2:0},
+      {date:'25 Jun', t1:'Denmark', t2:'Serbia', s1:0, s2:0}
+    ]
+  },
+  {
+    id:'D', hc:'linear-gradient(135deg,#6d28d9,#8b5cf6)',
+    teams:[
+      {name:'Austria', gd:'+2', pts:6},
+      {name:'France', gd:'+1', pts:5},
+      {name:'Netherlands', gd:'0', pts:4},
+      {name:'Poland', gd:'-3', pts:1}
+    ],
+    matches:[
+      {date:'16 Jun', t1:'Poland', t2:'Netherlands', s1:1, s2:2},
+      {date:'17 Jun', t1:'Austria', t2:'France', s1:0, s2:1},
+      {date:'21 Jun', t1:'Poland', t2:'Austria', s1:1, s2:3},
+      {date:'21 Jun', t1:'France', t2:'Netherlands', s1:0, s2:0},
+      {date:'25 Jun', t1:'Netherlands', t2:'Austria', s1:2, s2:3},
+      {date:'25 Jun', t1:'France', t2:'Poland', s1:1, s2:1}
+    ]
+  },
+  {
+    id:'E', hc:'linear-gradient(135deg,#b45309,#f59e0b)',
+    teams:[
+      {name:'Romania', gd:'+1', pts:4},
+      {name:'Belgium', gd:'+1', pts:4},
+      {name:'Slovakia', gd:'0', pts:4},
+      {name:'Ukraine', gd:'-2', pts:4}
+    ],
+    matches:[
+      {date:'17 Jun', t1:'Romania', t2:'Ukraine', s1:3, s2:0},
+      {date:'17 Jun', t1:'Belgium', t2:'Slovakia', s1:0, s2:1},
+      {date:'21 Jun', t1:'Slovakia', t2:'Ukraine', s1:1, s2:2},
+      {date:'22 Jun', t1:'Belgium', t2:'Romania', s1:2, s2:0},
+      {date:'26 Jun', t1:'Slovakia', t2:'Romania', s1:1, s2:1},
+      {date:'26 Jun', t1:'Ukraine', t2:'Belgium', s1:0, s2:0}
+    ]
+  },
+  {
+    id:'F', hc:'linear-gradient(135deg,#0f766e,#14b8a6)',
+    teams:[
+      {name:'Portugal', gd:'+2', pts:6},
+      {name:'Turkey', gd:'0', pts:6},
+      {name:'Georgia', gd:'-1', pts:4},
+      {name:'Czech Rep', gd:'-2', pts:1}
+    ],
+    matches:[
+      {date:'18 Jun', t1:'Turkey', t2:'Georgia', s1:3, s2:1},
+      {date:'18 Jun', t1:'Portugal', t2:'Czech Rep', s1:2, s2:1},
+      {date:'22 Jun', t1:'Georgia', t2:'Czech Rep', s1:1, s2:1},
+      {date:'22 Jun', t1:'Turkey', t2:'Portugal', s1:0, s2:3},
+      {date:'26 Jun', t1:'Georgia', t2:'Portugal', s1:2, s2:0},
+      {date:'26 Jun', t1:'Czech Rep', t2:'Turkey', s1:1, s2:2}
+    ]
+  }
+];
+
+var KO = {
+  r16: [
+    {t1:'Switzerland', t2:'Italy', s1:2, s2:0, info:'29 Jun · Berlin', w:1},
+    {t1:'Germany', t2:'Denmark', s1:2, s2:0, info:'29 Jun · Dortmund', w:1},
+    {t1:'England', t2:'Slovakia', s1:2, s2:1, info:'30 Jun · Gelsenkirchen (AET)', w:1},
+    {t1:'Spain', t2:'Georgia', s1:4, s2:1, info:'30 Jun · Cologne', w:1},
+    {t1:'France', t2:'Belgium', s1:1, s2:0, info:'1 Jul · Düsseldorf', w:1},
+    {t1:'Portugal', t2:'Slovenia', s1:'0 (3)', s2:'0 (0)', info:'1 Jul · Frankfurt (PEN)', w:1},
+    {t1:'Romania', t2:'Netherlands', s1:0, s2:3, info:'2 Jul · Munich', w:2},
+    {t1:'Austria', t2:'Turkey', s1:1, s2:2, info:'2 Jul · Leipzig', w:2}
+  ],
+  qf: [
+    {t1:'Spain', t2:'Germany', s1:2, s2:1, info:'5 Jul · Stuttgart (AET)', w:1},
+    {t1:'Portugal', t2:'France', s1:'0 (3)', s2:'0 (5)', info:'5 Jul · Hamburg (PEN)', w:2},
+    {t1:'England', t2:'Switzerland', s1:'1 (5)', s2:'1 (3)', info:'6 Jul · Düsseldorf (PEN)', w:1},
+    {t1:'Netherlands', t2:'Turkey', s1:2, s2:1, info:'6 Jul · Berlin', w:1}
+  ],
+  sf: [
+    {t1:'Spain', t2:'France', s1:2, s2:1, info:'9 Jul · Munich', w:1},
+    {t1:'Netherlands', t2:'England', s1:1, s2:2, info:'10 Jul · Dortmund', w:2}
+  ],
+  final: {t1:'Spain', t2:'England', s1:2, s2:1, info:'14 Jul 2024 · Olympiastadion, Berlin', w:1}
+};
+
+var FLAGS = {
+  'Germany': '🇩🇪', 'Switzerland': '🇨🇭', 'Hungary': '🇭🇺', 'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'Spain': '🇪🇸', 'Italy': '🇮🇹', 'Croatia': '🇭🇷', 'Albania': '🇦🇱',
+  'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Denmark': '🇩🇰', 'Slovenia': '🇸🇮', 'Serbia': '🇷🇸',
+  'Austria': '🇦🇹', 'France': '🇫🇷', 'Netherlands': '🇳🇱', 'Poland': '🇵🇱',
+  'Romania': '🇷🇴', 'Belgium': '🇧🇪', 'Slovakia': '🇸🇰', 'Ukraine': '🇺🇦',
+  'Portugal': '🇵🇹', 'Turkey': '🇹🇷', 'Georgia': '🇬🇪', 'Czech Rep': '🇨🇿'
+};
+
+function getFlag(name) { return FLAGS[name] || '🏳️'; }
+
+function renderAll() {
+  var topG = document.getElementById('top-groups');
+  var botG = document.getElementById('bot-groups');
+  topG.innerHTML = ''; botG.innerHTML = '';
+
+  GROUPS.forEach(function(g, idx) {
+    var html = '<div class="grp">';
+    html += '<div class="grp-hdr" style="background:'+g.hc+'">Group '+g.id+'</div>';
+    html += '<table class="grp-tbl"><tr><th>TEAM</th><th>GD</th><th>PTS</th></tr>';
+    g.teams.forEach(function(t, rk) {
+      var cls = rk===0?'q1':rk===1?'q2':rk===2 && ['Hungary','Croatia'].indexOf(t.name) === -1?'q3':'';
+      html += '<tr class="'+cls+'"><td><div class="tn">'+getFlag(t.name)+' '+t.name+'</div></td><td class="num-c">'+t.gd+'</td><td class="pts-c">'+t.pts+'</td></tr>';
+    });
+    html += '</table>';
+    g.matches.forEach(function(m) {
+      html += '<div class="mrow">' +
+        '<span class="md">'+m.date+'</span>' +
+        '<span class="mt1">'+m.t1+'</span>' +
+        '<span class="mscore">'+m.s1+'-'+m.s2+'</span>' +
+        '<span class="mt2">'+m.t2+'</span>' +
+        '</div>';
+    });
+    html += '</div>';
+    if (idx < 3) topG.innerHTML += html; else botG.innerHTML += html;
+  });
+
+  var ko = document.getElementById('ko');
+  ko.innerHTML = '';
+  [{key:'r16',label:'Round of 16'},{key:'qf',label:'Quarter-Finals'},{key:'sf',label:'Semi-Finals'}].forEach(function(r) {
+    var h = '<div class="round-label">'+r.label+'</div><div class="ko-scroll"><div class="ko-row">';
+    KO[r.key].forEach(function(m) {
+      var cls1 = m.w === 1 ? 'winner' : '';
+      var cls2 = m.w === 2 ? 'winner' : '';
+      h += '<div class="mc">' +
+        '<div class="tr"><span class="'+cls1+'">'+getFlag(m.t1)+' '+m.t1+'</span><span class="sc">'+m.s1+'</span></div>' +
+        '<div class="tr"><span class="'+cls2+'">'+getFlag(m.t2)+' '+m.t2+'</span><span class="sc">'+m.s2+'</span></div>' +
+        '<div class="bi">'+m.info+'</div></div>';
+    });
+    h += '</div></div>';
+    ko.innerHTML += h;
+  });
+
+  var fCls1 = KO.final.w === 1 ? 'style="color:#00f2fe"' : '';
+  var fCls2 = KO.final.w === 2 ? 'style="color:#00f2fe"' : '';
+  ko.innerHTML += '<div class="round-label">Final</div><div class="finals-row"><div class="mc-final">' +
+    '<div class="fh">EURO 2024 FINAL</div>' +
+    '<div class="tr"><span '+fCls1+'>🏆 '+getFlag(KO.final.t1)+' '+KO.final.t1+'</span><span class="sc">'+KO.final.s1+'</span></div>' +
+    '<div class="tr"><span '+fCls2+'>🏆 '+getFlag(KO.final.t2)+' '+KO.final.t2+'</span><span class="sc">'+KO.final.s2+'</span></div>' +
+    '<div class="bi">'+KO.final.info+'</div></div></div>';
+}
+
+renderAll();
+</script>
+</body>
+</html>
